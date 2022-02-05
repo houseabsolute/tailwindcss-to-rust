@@ -224,6 +224,10 @@ dependencies = [
 ]
 
 [[package]]
+name = "tailwindcss-to-rust-macros"
+version = "0.1.0"
+
+[[package]]
 name = "termcolor"
 version = "1.1.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
