@@ -61,7 +61,7 @@ jobs:
   # Copied from https://github.com/urbica/martin/blob/master/.github/workflows/ci.yml
   release:
     name: Release - ${{ matrix.platform.os_name }}
-    if: startsWith( github.ref, 'refs/tags/v' )
+    if: startsWith( github.ref, 'refs/tags/tailwindcss-to-rust-v' )
     needs: [test]
     strategy:
       matrix:
