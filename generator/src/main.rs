@@ -405,7 +405,7 @@ fn classes_code(
                 .expect("Could not render structs template"),
         );
         groups.push((
-            group_abbreviation(&group),
+            group_abbreviation(group),
             group.to_upper_camel_case(),
             group.to_uppercase(),
         ));
