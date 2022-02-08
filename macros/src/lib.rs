@@ -1,12 +1,5 @@
 #![doc = include_str!("../README.md")]
 //!
-//! You will need to write a bit of code of your own to tie this all
-//! together. Here is an example of the type of code you would write:
-//!
-//! ```rust,ignore
-#![doc = include_str!("../examples/css/tailwind.rs")]
-//! ```
-//!
 //! Putting it all together with a `css/mod.rs`:
 //!
 //! ```rust,ignore
@@ -27,7 +20,7 @@ pub use to_option_vec_string::ToOptionVecString;
 /// It frees you from having to write something like this:
 ///
 /// ```rust,ignore
-/// let classes = [ C.flex_and_grid.flex, C.flex_and_grid.flex_cols ].join(" ");
+/// let classes = [C.lay.flex, C.fg.flex_col].join(" ");
 /// ```
 ///
 /// It also offers a lot of flexibility in what types it accepts, so you can
@@ -38,20 +31,15 @@ pub use to_option_vec_string::ToOptionVecString;
 /// * `&String`
 /// * `Option<T>` and `&Option<T>` where `T` is any of the above.
 /// * `Vec<T>`, `&Vec<T>`, and `&[T]` where `T` is any of the above.
-///
-/// So the following works as you'd want:
-///
-/// ```rust,ignore
-/// let foo = String::from("foo");
-/// let maybe_bar = Some("bar");
-/// let extra: Vec<&str> = vec!["buz", "quux", "zub"];
-/// let class = C![ "some-str", foo, class, extra ];
-/// // class is now a String containing "some-str foo bar buz quux zub"
-/// ```
 #[macro_export]
 macro_rules! C {
     ( $($class:expr $(,)?)+ ) => {
         {
+            // [
+            // $(
+            //     $class.to_option_vec_string(),
+            // )*
+            // ].into_iter().filter_map(Option::is_some).flatten().join(" ")
             let mut all_classes = vec![];
             $(
                 $crate::_push_all_strings(&mut all_classes, $class.to_option_vec_string());
@@ -61,7 +49,7 @@ macro_rules! C {
     };
 }
 
-/// Variant of the [`C!`] macro for use with Dioxus.
+/// Variant of the [`C!`] macro for use with Dioxus `class` attributes.
 ///
 /// This works exactly like [`C!`] but it is designed to work with Dioxus's
 /// attributes.
@@ -70,6 +58,11 @@ macro_rules! C {
 ///
 /// ```rust,ignore
 /// use tailwindcss_to_rust_macros::DC as C;
+///
+/// div {
+///    class: DC![C.typ.text_lg],
+///    ...
+/// }
 /// ```
 #[macro_export]
 macro_rules! DC {
@@ -92,7 +85,7 @@ macro_rules! DC {
 /// ```rust,ignore
 /// let classes = [
 ///     C.flex_and_grid.grid_cols_3,
-///     M![ M.lg, C.flex_and_grid.grid_cols_6 ]
+///     M![M.lg, C.fg.grid_cols_6],
 /// ].join(" ");
 /// // classes is "grid-cols-3 lg:grid-cols-6"
 /// ```
@@ -238,5 +231,25 @@ mod tests {
         assert_eq!(C![option_vec], "foo_1 foo_2");
         let option_vec: Option<Vec<&str>> = Some(vec!["foo_1", "foo_2"]);
         assert_eq!(M![option_vec], "foo_1:foo_2");
+    }
+
+    // I wrote this to help debug an issue with a Dioxus application where
+    // similar code was leading to memory errors in the generated WASM.
+    #[test]
+    fn with_fmt() {
+        struct Classes {
+            classes: String,
+        }
+
+        impl std::fmt::Display for Classes {
+            fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+                write!(f, "{} {}", self.classes, C!["foo", "bar" M!["md", "baz"]],)
+            }
+        }
+
+        let classes = Classes {
+            classes: "x y z".to_string(),
+        };
+        assert_eq!(format!("{}", classes), "x y z foo bar md:baz");
     }
 }

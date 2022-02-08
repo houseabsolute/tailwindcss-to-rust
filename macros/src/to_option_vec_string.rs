@@ -5,11 +5,13 @@
 //
 // Licensed under the MIT license only.
 
-//! Trait to make the `C!` and `M!` macros work with many types.
+//! Contains a trait to make the macros work with many types.
 //!
-//! You need to make sure this trait is imported by any code that wants to use
-//! the `C!` and `M!` macros.
-
+//! ```rust,ignore
+//! use tailwindcss_to_rust_macros::{C, M, ToOptionvecstring};
+//! ```
+/// You need to make sure this trait is imported by any code that wants to use
+/// the `C!`, `DC!`, or `M!` macros.
 pub trait ToOptionVecString {
     fn to_option_vec_string(self) -> Option<Vec<String>>;
 }
