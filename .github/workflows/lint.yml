@@ -11,6 +11,8 @@ jobs:
     name: Check that code is lint clean using precious
     runs-on: ubuntu-latest
     steps:
+      - name: Add $HOME/bin to $PATH
+        run: echo "${HOME}/bin" >> $GITHUB_PATH
       - uses: actions/checkout@v2
       - name: Cache cargo target directories
         uses: actions/cache@v2
