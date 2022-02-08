@@ -14,7 +14,7 @@ use std::{
     path::{Path, PathBuf},
     process::Command,
 };
-use tempdir::TempDir;
+use tempfile::{tempdir, TempDir};
 use tinytemplate::TinyTemplate;
 
 #[derive(ArgEnum, Clone, Debug)]
@@ -82,8 +82,7 @@ fn structs_from_css_file(
     tw: &Path,
     input: &Path,
 ) -> HashMap<&'static str, HashMap<String, String>> {
-    let tempdir = TempDir::new("tailwindcss-to-rust")
-        .unwrap_or_else(|e| panic!("Could not create temp dir: {}", e));
+    let tempdir = tempdir().unwrap_or_else(|e| panic!("Could not create temp dir: {}", e));
     let css = write_css_file(tw, input, &tempdir);
     let content = read_to_string(&css).unwrap_or_else(|e| {
         panic!(

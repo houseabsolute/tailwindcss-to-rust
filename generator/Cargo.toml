@@ -14,5 +14,7 @@ heck = "0.4.0"
 itertools = "0.10.3"
 regex = "1.5.4"
 serde = { version = "1.0.136", features = ["derive"] }
-tempdir = "0.3.7"
+tempfile = "3.3.0"
 tinytemplate = "1.2.1"
+
+[features]
