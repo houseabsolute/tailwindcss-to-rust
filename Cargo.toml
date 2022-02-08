@@ -1,2 +1,5 @@
 [workspace]
 members = [ "generator", "macros" ]
+
+[workspace.metadata.release]
+allow-branch = ["master"]
