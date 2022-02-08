@@ -22,7 +22,7 @@ expect_stderr = true
 
 [commands.prettier]
 type    = "both"
-include = "**/*.md"
+include = [ "**/*.md", "**/*.yml" ]
 cmd     = "prettier"
 lint_flags = "--check"
 tidy_flags = "--write"
