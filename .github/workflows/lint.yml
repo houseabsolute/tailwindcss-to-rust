@@ -11,9 +11,8 @@ jobs:
     name: Check that code is lint clean using precious
     runs-on: ubuntu-latest
     steps:
-      - name: Add $HOME/bin to $PATH
-        run: echo "${HOME}/bin" >> $GITHUB_PATH
       - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
       - name: Cache cargo target directories
         uses: actions/cache@v2
         with:
@@ -32,11 +31,6 @@ jobs:
         run: |
           git config --global user.email "jdoe@example.com"
           git config --global user.name "J. Doe"
-      - name: Download precious
-        uses: dsaltares/fetch-gh-release-asset@0.0.5
-        with:
-          repo: houseabsolute/precious
-          file: precious-Linux-x86_64.tar.gz
       - name: Run install-dev-tools.sh
         run: |
           set -e
