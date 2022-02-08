@@ -12,34 +12,63 @@ Here's a quick start recipe:
    tool](https://tailwindcss.com/docs/installation). You can install it with
    `npm` or `npx`, or you can [download a standalone binary from the
    tailwindcss repo](https://github.com/tailwindlabs/tailwindcss/releases).
-2. Create a `tailwind.config.js` file with the tool by running:
 
-   ```
-   tailwindcss init --full
-   ```
-
-3. Generate your CSS by running in
-   the directory that contains your `tailwind.config.js` file, by running:
-
-   ```
-   tailwindcss --output path/to/tailwind.css
-   ```
-
-4. Install this tool by running:
+2. Install this tool by running:
 
    ```
    cargo install tailwindcss-to-rust
    ```
 
-5. Generate your Rust code by running:
+3. Create a `tailwind.config.js` file with the tool by running:
 
    ```
-   tailwindcss-to-rust --css path/to/tailwind.css --output src/css/generated.rs
+   tailwindcss init --full
    ```
 
-6. Check out the [tailwindcss-to-rust-macros
-   crate](https://crates.io/crates/tailwindcss-to-rust-macros) for the most
-   ergonomic way to use this generated code.
+4. Edit this file however you like to add plugins or customize the generated
+   CSS.
+
+5. Create a CSS input file for Tailwind. The standard file looks like this:
+
+   ```css
+   @tailwind base;
+   @tailwind components;
+   @tailwind utilities;
+   ```
+
+6. Generate your Rust code by running:
+
+   ```
+   tailwindcss-to-rust --tailwind-config tailwind.config.js \
+        --input tailwind.css \
+        --output src/css/generated.rs \
+        --rustfmt
+   ```
+
+7. Edit your `tailwind.config.js` file to look in your Rust files for Tailwind
+   class names:
+
+   ```js
+   module.exports = {
+     ...
+     content: {
+       files: [
+         "index.html",
+         "**/*.rs",
+       ],
+       extract: {
+         rs: (content) => {
+           return content.match(/C\./);
+         },
+       },
+     ],
+     ...
+   }
+   ```
+
+Check out the [tailwindcss-to-rust-macros
+crate](https://crates.io/crates/tailwindcss-to-rust-macros) for the most
+ergonomic way to use this generated code.
 
 The generated names consist of all the class names present in the CSS file,
 except names that start with a dash (`-`), names that contain pseudo-elements,
