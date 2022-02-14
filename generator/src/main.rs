@@ -116,7 +116,7 @@ fn structs_from_css_file(
             structs.insert(group, members);
             structs.get_mut(group).unwrap()
         };
-        members.insert(class_to_rust_var(class), class.replace('\\', "\\\\"));
+        members.insert(class_to_rust_var(class), clean);
     }
 
     structs
