@@ -3,6 +3,8 @@ refer to Tailwind classes from your Rust code. This means that any attempt to
 use a nonexistent class will lead to a compile-time error, and you can use
 code completion to list available classes.
 
+**This tool works with version 3 of Tailwind.**
+
 The generated code allows you to use Tailwind CSS classes in your Rust
 frontend code with compile-time checking of names and code completion for
 class names. These classes are grouped together based on the heading in the
