@@ -51,7 +51,7 @@ Here's a quick start recipe:
 3. Create a `tailwind.config.js` file with the tool by running:
 
    ```sh
-   tailwindcss init --full
+   tailwindcss init
    ```
 
 4. Edit this file however you like to add plugins or customize the generated
