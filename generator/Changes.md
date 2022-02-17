@@ -1,3 +1,7 @@
+## v0.1.3 - 2022-02-17
+
+- Documentation fixes.
+
 ## v0.1.2 - 2022-02-14
 
 - Fixed the handling of CSS class names with periods and forward slashes. The
@@ -9,7 +13,7 @@
 
 ## v0.1.1 - 2022-02-08
 
-- Fixed the repository metadata for both crates. Thanks to @overlisted on the
+- Fixed the repository metadata for the crate. Thanks to @overlisted on the
   Dioxus Discord for pointing this out.
 
 ## v0.1.0 - 2022-02-08
