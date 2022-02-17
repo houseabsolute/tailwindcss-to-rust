@@ -84,7 +84,7 @@ Here's a quick start recipe:
    module.exports = {
      content: {
        files: ["index.html", "**/*.rs"],
-       // You do need to copy this big blog of code in, unfortunately.
+       // You do need to copy this big block of code in, unfortunately.
        extract: {
          rs: (content) => {
            const rs_to_tw = (rs) => {
