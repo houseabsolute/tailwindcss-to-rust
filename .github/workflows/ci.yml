@@ -117,6 +117,6 @@ jobs:
         with:
           draft: true
           files: "tailwindcss-to-rust*"
-          body_path: Changes.md
+          body_path: tailwindcss-to-rust/Changes.md
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
