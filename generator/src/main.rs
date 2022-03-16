@@ -439,7 +439,7 @@ fn class_to_rust_var(class: &str) -> String {
         .replace('\\', "")
         .replace('-', "_")
         .replace('.', "_p_")
-        .replace("/", "_of_")
+        .replace('/', "_of_")
 }
 
 fn group_abbreviation(group: &str) -> &str {
