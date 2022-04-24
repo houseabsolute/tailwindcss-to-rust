@@ -1,3 +1,8 @@
+## v0.1.4
+
+- Added a new `--tailwindcss` argument. This can be used to provide the path
+  to the `tailwindcss` executable.
+
 ## v0.1.3 - 2022-02-17
 
 - Documentation fixes.

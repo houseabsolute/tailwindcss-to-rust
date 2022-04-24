@@ -78,6 +78,10 @@ Here's a quick start recipe:
         --rustfmt
    ```
 
+   **The `tailwindcss` executable must be in your `PATH` when you run
+   `tailwindcss-to-rust` or you must provide the path to the executable in the
+   `--tailwindcss` argument.**
+
 7. Edit your `tailwind.config.js` file to look in your Rust files for Tailwind
    class names:
 

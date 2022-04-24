@@ -44,12 +44,16 @@ struct Args {
     /// code. Defaults to false.
     #[clap(short, long)]
     rustfmt: bool,
+    /// The path to the `tailwindcss` executable. Defaults to "tailwindcss",
+    /// which requires the executable to be in the current `PATH`.
+    #[clap(long, default_value = "tailwindcss")]
+    tailwindcss: PathBuf,
 }
 
 fn main() {
     let args = Args::parse();
 
-    let structs = structs_from_css_file(&args.tailwind_config, &args.input);
+    let structs = structs_from_css_file(&args.tailwind_config, &args.input, &args.tailwindcss);
 
     let visibility = match args.visibility {
         Visibility::Public => "pub",
@@ -79,11 +83,12 @@ fn main() {
 }
 
 fn structs_from_css_file(
-    tw: &Path,
+    tw_config: &Path,
     input: &Path,
+    tw_exe: &Path,
 ) -> HashMap<&'static str, HashMap<String, String>> {
     let tempdir = tempdir().unwrap_or_else(|e| panic!("Could not create temp dir: {}", e));
-    let css = write_css_file(tw, input, &tempdir);
+    let css = write_css_file(tw_config, input, tw_exe, &tempdir);
     let content = read_to_string(&css).unwrap_or_else(|e| {
         panic!(
             "Could not read css file at {}: {}",
@@ -122,11 +127,11 @@ fn structs_from_css_file(
     structs
 }
 
-fn write_css_file(tw: &Path, input: &Path, tempdir: &TempDir) -> PathBuf {
-    let mut config = read_to_string(tw).unwrap_or_else(|e| {
+fn write_css_file(tw_config: &Path, input: &Path, tw_exe: &Path, tempdir: &TempDir) -> PathBuf {
+    let mut config = read_to_string(tw_config).unwrap_or_else(|e| {
         panic!(
             "Could not read tailwind config at {}: {}",
-            tw.to_string_lossy(),
+            tw_config.to_string_lossy(),
             e
         )
     });
@@ -137,7 +142,7 @@ fn write_css_file(tw: &Path, input: &Path, tempdir: &TempDir) -> PathBuf {
         .replace(&config, "\nsafelist: [ { pattern: /.*/ } ],\n}\n")
         .to_string();
 
-    let mut node_modules = tw.parent().unwrap().to_path_buf();
+    let mut node_modules = tw_config.parent().unwrap().to_path_buf();
     node_modules.push("node_modules");
     if node_modules.exists() {
         let mut new_node_modules = tempdir.path().to_path_buf();
@@ -185,7 +190,7 @@ fn write_css_file(tw: &Path, input: &Path, tempdir: &TempDir) -> PathBuf {
 
     let mut css = tempdir.path().to_path_buf();
     css.push("tailwind-output.css");
-    Command::new("tailwindcss")
+    Command::new(tw_exe)
         .arg("--config")
         .arg(&new_tw)
         .arg("--input")
