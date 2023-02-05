@@ -1,3 +1,11 @@
+## v0.2.0
+
+- Updated the class categories for the latest TailwindCSS version, 3.2.4.
+
+- Updated the docs to make it clearer how to configure `tailwind.config.js`
+  depending on whether or not you're using the macros, what templating system
+  you're using, etc.
+
 ## v0.1.4 - 2022-04-24
 
 - Added a new `--tailwindcss` argument. This can be used to provide the path

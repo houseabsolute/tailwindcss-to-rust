@@ -198,25 +198,36 @@ fn group_for(groups: &HashMap<&'static str, &'static str>, class: &str) -> &'sta
         return g;
     }
     // There are a bunch of classes that Tailwind generates that aren't
-    // explicitly mentioned in the docs (maybe for back compat?).
-    if class.starts_with("aspect-") {
+    // explicitly mentioned in the docs (maybe for back compat?), as well as a
+    // whole bunch of color opacity classes that need to be handled.
+    if class.starts_with("accent-") || class.starts_with("caret-") {
+        "interactivity"
+    } else if class.starts_with("aspect-") {
         "aspect"
     } else if class.starts_with("backdrop-") {
         "filters"
-    } else if class.starts_with("bg-opacity-") {
+    } else if class.starts_with("bg-") {
         "backgrounds"
     } else if class.starts_with("blur-") {
         "filters"
-    } else if class.starts_with("border-opacity-") {
+    } else if class.starts_with("border-")
+        || class.starts_with("outline-")
+        || class.starts_with("ring-")
+        || class.starts_with("via-")
+    {
         "borders"
     } else if class.starts_with("declaration-") {
         "typography"
     } else if class.starts_with("decoration-") {
         "layout"
-    } else if class.starts_with("filter") {
+    } else if class.starts_with("fill-") || class.starts_with("stroke-") {
+        "svg"
+    } else if class.starts_with("filter") || class.starts_with("shadow-") {
         "filters"
     } else if class.starts_with("flex-") {
         "flex_and_grid"
+    } else if class.starts_with("from-") || class.starts_with("to-") {
+        "backgrounds"
     } else if class.starts_with("line-clamp-") {
         "line_clamp"
     } else if class.starts_with("overflow-") {
@@ -225,9 +236,7 @@ fn group_for(groups: &HashMap<&'static str, &'static str>, class: &str) -> &'sta
         "placeholders"
     } else if class.starts_with("prose") {
         "prose"
-    } else if class.starts_with("ring-opacity-") {
-        "borders"
-    } else if class.starts_with("text-opacity-") {
+    } else if class.starts_with("text-") {
         "typography"
     } else if class.starts_with("transform") {
         "transforms"
@@ -3363,7 +3372,6 @@ fn make_groups() -> HashMap<&'static str, &'static str> {
         ("outline-green-700", "borders"),
         ("outline-green-800", "borders"),
         ("outline-green-900", "borders"),
-        ("outline-hidden", "borders"),
         ("outline-indigo-100", "borders"),
         ("outline-indigo-200", "borders"),
         ("outline-indigo-300", "borders"),
@@ -4095,6 +4103,7 @@ fn make_groups() -> HashMap<&'static str, &'static str> {
         ("mix-blend-multiply", "effects"),
         ("mix-blend-normal", "effects"),
         ("mix-blend-overlay", "effects"),
+        ("mix-blend-plus-lighter", "effects"),
         ("mix-blend-saturation", "effects"),
         ("mix-blend-screen", "effects"),
         ("mix-blend-soft-light", "effects"),
@@ -4568,6 +4577,7 @@ fn make_groups() -> HashMap<&'static str, &'static str> {
         ("col-start-9", "flex_and_grid"),
         ("col-start-auto", "flex_and_grid"),
         ("content-around", "flex_and_grid"),
+        ("content-baseline", "flex_and_grid"),
         ("content-between", "flex_and_grid"),
         ("content-center", "flex_and_grid"),
         ("content-end", "flex_and_grid"),
@@ -4704,6 +4714,7 @@ fn make_groups() -> HashMap<&'static str, &'static str> {
         ("grid-cols-none", "flex_and_grid"),
         ("grid-flow-col", "flex_and_grid"),
         ("grid-flow-col-dense", "flex_and_grid"),
+        ("grid-flow-dense", "flex_and_grid"),
         ("grid-flow-row", "flex_and_grid"),
         ("grid-flow-row-dense", "flex_and_grid"),
         ("grid-rows-1", "flex_and_grid"),
@@ -4751,12 +4762,14 @@ fn make_groups() -> HashMap<&'static str, &'static str> {
         ("order-last", "flex_and_grid"),
         ("order-none", "flex_and_grid"),
         ("place-content-around", "flex_and_grid"),
+        ("place-content-baseline", "flex_and_grid"),
         ("place-content-between", "flex_and_grid"),
         ("place-content-center", "flex_and_grid"),
         ("place-content-end", "flex_and_grid"),
         ("place-content-evenly", "flex_and_grid"),
         ("place-content-start", "flex_and_grid"),
         ("place-content-stretch", "flex_and_grid"),
+        ("place-items-baseline", "flex_and_grid"),
         ("place-items-center", "flex_and_grid"),
         ("place-items-end", "flex_and_grid"),
         ("place-items-start", "flex_and_grid"),
@@ -5891,6 +5904,7 @@ fn make_groups() -> HashMap<&'static str, &'static str> {
         ("clear-left", "layout"),
         ("clear-none", "layout"),
         ("clear-right", "layout"),
+        ("collapse", "layout"),
         ("columns-1", "layout"),
         ("columns-10", "layout"),
         ("columns-11", "layout"),
@@ -7125,6 +7139,7 @@ fn make_groups() -> HashMap<&'static str, &'static str> {
         ("fill-neutral-700", "svg"),
         ("fill-neutral-800", "svg"),
         ("fill-neutral-900", "svg"),
+        ("fill-none", "svg"),
         ("fill-orange-100", "svg"),
         ("fill-orange-200", "svg"),
         ("fill-orange-300", "svg"),
@@ -7353,6 +7368,7 @@ fn make_groups() -> HashMap<&'static str, &'static str> {
         ("stroke-neutral-700", "svg"),
         ("stroke-neutral-800", "svg"),
         ("stroke-neutral-900", "svg"),
+        ("stroke-none", "svg"),
         ("stroke-orange-100", "svg"),
         ("stroke-orange-200", "svg"),
         ("stroke-orange-300", "svg"),
@@ -7477,6 +7493,111 @@ fn make_groups() -> HashMap<&'static str, &'static str> {
         ("stroke-zinc-900", "svg"),
         ("border-collapse", "tables"),
         ("border-separate", "tables"),
+        ("border-spacing-0", "tables"),
+        ("border-spacing-0.5", "tables"),
+        ("border-spacing-1", "tables"),
+        ("border-spacing-1.5", "tables"),
+        ("border-spacing-10", "tables"),
+        ("border-spacing-11", "tables"),
+        ("border-spacing-12", "tables"),
+        ("border-spacing-14", "tables"),
+        ("border-spacing-16", "tables"),
+        ("border-spacing-2", "tables"),
+        ("border-spacing-2.5", "tables"),
+        ("border-spacing-20", "tables"),
+        ("border-spacing-24", "tables"),
+        ("border-spacing-28", "tables"),
+        ("border-spacing-3", "tables"),
+        ("border-spacing-3.5", "tables"),
+        ("border-spacing-32", "tables"),
+        ("border-spacing-36", "tables"),
+        ("border-spacing-4", "tables"),
+        ("border-spacing-40", "tables"),
+        ("border-spacing-44", "tables"),
+        ("border-spacing-48", "tables"),
+        ("border-spacing-5", "tables"),
+        ("border-spacing-52", "tables"),
+        ("border-spacing-56", "tables"),
+        ("border-spacing-6", "tables"),
+        ("border-spacing-60", "tables"),
+        ("border-spacing-64", "tables"),
+        ("border-spacing-7", "tables"),
+        ("border-spacing-72", "tables"),
+        ("border-spacing-8", "tables"),
+        ("border-spacing-80", "tables"),
+        ("border-spacing-9", "tables"),
+        ("border-spacing-96", "tables"),
+        ("border-spacing-px", "tables"),
+        ("border-spacing-x-0", "tables"),
+        ("border-spacing-x-0.5", "tables"),
+        ("border-spacing-x-1", "tables"),
+        ("border-spacing-x-1.5", "tables"),
+        ("border-spacing-x-10", "tables"),
+        ("border-spacing-x-11", "tables"),
+        ("border-spacing-x-12", "tables"),
+        ("border-spacing-x-14", "tables"),
+        ("border-spacing-x-16", "tables"),
+        ("border-spacing-x-2", "tables"),
+        ("border-spacing-x-2.5", "tables"),
+        ("border-spacing-x-20", "tables"),
+        ("border-spacing-x-24", "tables"),
+        ("border-spacing-x-28", "tables"),
+        ("border-spacing-x-3", "tables"),
+        ("border-spacing-x-3.5", "tables"),
+        ("border-spacing-x-32", "tables"),
+        ("border-spacing-x-36", "tables"),
+        ("border-spacing-x-4", "tables"),
+        ("border-spacing-x-40", "tables"),
+        ("border-spacing-x-44", "tables"),
+        ("border-spacing-x-48", "tables"),
+        ("border-spacing-x-5", "tables"),
+        ("border-spacing-x-52", "tables"),
+        ("border-spacing-x-56", "tables"),
+        ("border-spacing-x-6", "tables"),
+        ("border-spacing-x-60", "tables"),
+        ("border-spacing-x-64", "tables"),
+        ("border-spacing-x-7", "tables"),
+        ("border-spacing-x-72", "tables"),
+        ("border-spacing-x-8", "tables"),
+        ("border-spacing-x-80", "tables"),
+        ("border-spacing-x-9", "tables"),
+        ("border-spacing-x-96", "tables"),
+        ("border-spacing-x-px", "tables"),
+        ("border-spacing-y-0", "tables"),
+        ("border-spacing-y-0.5", "tables"),
+        ("border-spacing-y-1", "tables"),
+        ("border-spacing-y-1.5", "tables"),
+        ("border-spacing-y-10", "tables"),
+        ("border-spacing-y-11", "tables"),
+        ("border-spacing-y-12", "tables"),
+        ("border-spacing-y-14", "tables"),
+        ("border-spacing-y-16", "tables"),
+        ("border-spacing-y-2", "tables"),
+        ("border-spacing-y-2.5", "tables"),
+        ("border-spacing-y-20", "tables"),
+        ("border-spacing-y-24", "tables"),
+        ("border-spacing-y-28", "tables"),
+        ("border-spacing-y-3", "tables"),
+        ("border-spacing-y-3.5", "tables"),
+        ("border-spacing-y-32", "tables"),
+        ("border-spacing-y-36", "tables"),
+        ("border-spacing-y-4", "tables"),
+        ("border-spacing-y-40", "tables"),
+        ("border-spacing-y-44", "tables"),
+        ("border-spacing-y-48", "tables"),
+        ("border-spacing-y-5", "tables"),
+        ("border-spacing-y-52", "tables"),
+        ("border-spacing-y-56", "tables"),
+        ("border-spacing-y-6", "tables"),
+        ("border-spacing-y-60", "tables"),
+        ("border-spacing-y-64", "tables"),
+        ("border-spacing-y-7", "tables"),
+        ("border-spacing-y-72", "tables"),
+        ("border-spacing-y-8", "tables"),
+        ("border-spacing-y-80", "tables"),
+        ("border-spacing-y-9", "tables"),
+        ("border-spacing-y-96", "tables"),
+        ("border-spacing-y-px", "tables"),
         ("table-auto", "tables"),
         ("table-fixed", "tables"),
         ("origin-bottom", "transforms"),
@@ -7633,6 +7754,7 @@ fn make_groups() -> HashMap<&'static str, &'static str> {
         ("align-top", "typography"),
         ("antialiased", "typography"),
         ("break-all", "typography"),
+        ("break-keep", "typography"),
         ("break-normal", "typography"),
         ("break-words", "typography"),
         ("capitalize", "typography"),
@@ -8011,6 +8133,7 @@ fn make_groups() -> HashMap<&'static str, &'static str> {
         ("text-emerald-700", "typography"),
         ("text-emerald-800", "typography"),
         ("text-emerald-900", "typography"),
+        ("text-end", "typography"),
         ("text-fuchsia-100", "typography"),
         ("text-fuchsia-200", "typography"),
         ("text-fuchsia-300", "typography"),
@@ -8147,6 +8270,7 @@ fn make_groups() -> HashMap<&'static str, &'static str> {
         ("text-slate-800", "typography"),
         ("text-slate-900", "typography"),
         ("text-sm", "typography"),
+        ("text-start", "typography"),
         ("text-stone-100", "typography"),
         ("text-stone-200", "typography"),
         ("text-stone-300", "typography"),

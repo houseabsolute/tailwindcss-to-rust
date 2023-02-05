@@ -3,7 +3,7 @@ refer to Tailwind classes from your Rust code. This means that any attempt to
 use a nonexistent class will lead to a compile-time error, and you can use
 code completion to list available classes.
 
-**This tool works with version 3 of Tailwind.**
+**This tool has been tested with version 3.2.x of Tailwind.**
 
 The generated code allows you to use Tailwind CSS classes in your Rust
 frontend code with compile-time checking of names and code completion for
@@ -86,6 +86,7 @@ Here's a quick start recipe:
    class names:
 
    ```js
+   /** @type {import('tailwindcss').Config} */
    module.exports = {
      content: {
        files: ["index.html", "**/*.rs"],
@@ -102,9 +103,15 @@ Here's a quick start recipe:
                .replaceAll("_", "-");
            };
 
+           let one_class_re = "C\\.[a-z0-9_]+\\.([a-z0-9_]+)";
+           let class_re = new RegExp(one_class_re + "\\b", "g");
+           let one_mod_re = "M\\.([a-z0-9_]+)";
+           let mod_re = new RegExp(
+             "(:?" + one_mod_re + "\\s*,\\s*)" + one_class_re + "\\b",
+             "g"
+           );
+
            let classes = [];
-           let class_re = /C\.[^ ]+\.([^\. ]+)\b/g;
-           let mod_re = /(?:M\.([^\. ]+)\s*,\s*)+C\.[^ ]+\.([^\. ]+)\b/g;
            let matches = [...content.matchAll(mod_re)];
            if (matches.length > 0) {
              classes.push(
@@ -119,12 +126,42 @@ Here's a quick start recipe:
                return rs_to_tw(m[1]);
              })
            );
+           if (classes) {
+             console.log(classes);
+           }
            return classes;
          },
        },
      },
-     ...
+     theme: {
+       extend: {},
+     },
+     plugins: [],
    };
+   ```
+
+   **Note that you may need to customize the regexes in the
+   `extract` function to match your templating system!** The regexes in this
+   example will match the syntax you'd use with the
+   [tailwindcss-to-rust-macros](https://crates.io/crates/tailwindcss-to-rust-macros)
+   crate.
+
+   For example, if you're using [askama](https://crates.io/crates/askama)
+   without the macros then you will need to match something like this:
+
+   ```html
+   <div class="{{ M.hover }}:{{ C.bg.bg_rose_500 }} {{ C.bg.bg_rose_800 }}">
+     ...
+   </div>
+   ```
+
+   The regexes for that would look something like this:
+
+   ```js
+   let one_class_re = "{{\\s*C\\.[a-z0-9_]+\\.([a-z0-9_]+)\\s*}}";
+   let class_re = new RegExp(one_class_re, "g");
+   let one_mod_re = "{{\\s*M\\.([a-z0-9_]+)\\s*}}";
+   let mod_re = new RegExp(one_mod_re + ":" + one_class_re, "g");
    ```
 
 8. Hack, hack, hack ...
