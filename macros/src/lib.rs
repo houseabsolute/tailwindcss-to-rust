@@ -255,6 +255,6 @@ mod tests {
         let classes = Classes {
             classes: "x y z".to_string(),
         };
-        assert_eq!(format!("{}", classes), "x y z foo bar md:baz");
+        assert_eq!(format!("{classes}"), "x y z foo bar md:baz");
     }
 }

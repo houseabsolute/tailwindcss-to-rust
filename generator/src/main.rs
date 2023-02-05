@@ -78,7 +78,7 @@ fn main() {
         Command::new("rustfmt")
             .arg(&args.output)
             .output()
-            .unwrap_or_else(|e| panic!("Could not run rustfmt: {}", e));
+            .unwrap_or_else(|e| panic!("Could not run rustfmt: {e}"));
     }
 }
 
@@ -87,15 +87,10 @@ fn structs_from_css_file(
     input: &Path,
     tw_exe: &Path,
 ) -> HashMap<&'static str, HashMap<String, String>> {
-    let tempdir = tempdir().unwrap_or_else(|e| panic!("Could not create temp dir: {}", e));
+    let tempdir = tempdir().unwrap_or_else(|e| panic!("Could not create temp dir: {e}"));
     let css = write_css_file(tw_config, input, tw_exe, &tempdir);
-    let content = read_to_string(&css).unwrap_or_else(|e| {
-        panic!(
-            "Could not read css file at {}: {}",
-            css.to_string_lossy(),
-            e
-        )
-    });
+    let content = read_to_string(&css)
+        .unwrap_or_else(|e| panic!("Could not read css file at {}: {e}", css.to_string_lossy()));
 
     // Matches any class like ".foo" but not classes with modifiers like
     // ".foo::-moz-foo".
@@ -130,9 +125,8 @@ fn structs_from_css_file(
 fn write_css_file(tw_config: &Path, input: &Path, tw_exe: &Path, tempdir: &TempDir) -> PathBuf {
     let mut config = read_to_string(tw_config).unwrap_or_else(|e| {
         panic!(
-            "Could not read tailwind config at {}: {}",
+            "Could not read tailwind config at {}: {e}",
             tw_config.to_string_lossy(),
-            e
         )
     });
     // Putting our new config items at the very end ensures they'll override
@@ -150,19 +144,17 @@ fn write_css_file(tw_config: &Path, input: &Path, tw_exe: &Path, tempdir: &TempD
         #[cfg(target_os = "windows")]
         symlink_dir(&node_modules, &new_node_modules).unwrap_or_else(|e| {
             panic!(
-                "Could not make a symlink from {} to {} directory: {}",
+                "Could not make a symlink from {} to {} directory: {e}",
                 node_modules.to_string_lossy(),
                 new_node_modules.to_string_lossy(),
-                e
             )
         });
         #[cfg(not(target_os = "windows"))]
         symlink(&node_modules, &new_node_modules).unwrap_or_else(|e| {
             panic!(
-                "Could not make a symlink from {} to {} directory: {}",
+                "Could not make a symlink from {} to {} directory: {e}",
                 node_modules.to_string_lossy(),
                 new_node_modules.to_string_lossy(),
-                e
             )
         });
     }
@@ -171,20 +163,18 @@ fn write_css_file(tw_config: &Path, input: &Path, tw_exe: &Path, tempdir: &TempD
     new_tw.push("tailwind.config.js");
     write(&new_tw, config).unwrap_or_else(|e| {
         panic!(
-            "Could not write new tailwind config to {}: {}",
+            "Could not write new tailwind config to {}: {e}",
             new_tw.to_string_lossy(),
-            e
         )
     });
 
     let mut new_css = tempdir.path().to_path_buf();
     new_css.push("tailwind.css");
-    copy(&input, &new_css).unwrap_or_else(|e| {
+    copy(input, &new_css).unwrap_or_else(|e| {
         panic!(
-            "Could not copy {} to {}: {}",
+            "Could not copy {} to {}: {e}",
             input.to_string_lossy(),
             new_css.to_string_lossy(),
-            e,
         )
     });
 
@@ -198,14 +188,14 @@ fn write_css_file(tw_config: &Path, input: &Path, tw_exe: &Path, tempdir: &TempD
         .arg("--output")
         .arg(&css)
         .output()
-        .unwrap_or_else(|e| panic!("Could not run tailwindcss: {}", e));
+        .unwrap_or_else(|e| panic!("Could not run tailwindcss: {e}"));
 
     css
 }
 
 fn group_for(groups: &HashMap<&'static str, &'static str>, class: &str) -> &'static str {
     if let Some(g) = groups.get(class) {
-        return *g;
+        return g;
     }
     // There are a bunch of classes that Tailwind generates that aren't
     // explicitly mentioned in the docs (maybe for back compat?).
