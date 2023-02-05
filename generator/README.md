@@ -211,7 +211,7 @@ group available from `C.unk`. Adding a way to put these custom classes in
 other groups is a todo item.
 
 The modifiers have their own struct, `M`, which contains one field per
-modifiers, so it's used as `M.lg` or `M.hover`.
+modifier, so it's used as `M.lg` or `M.hover`.
 
 The best way to understand the generated structs is to simply open the
 generated code file in your editor and look at it.
