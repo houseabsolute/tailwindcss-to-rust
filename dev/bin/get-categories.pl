@@ -3,7 +3,7 @@ use v5.32;
 use strict;
 use warnings;
 
-use LWP::Simple qw( get );
+use LWP::UserAgent;
 use Mojo::DOM;
 use Time::HiRes qw( sleep );
 
@@ -31,7 +31,7 @@ sub main {
 }
 
 sub get_links {
-    my $dom = Mojo::DOM->new( get( make_url('/docs') ) );
+    my $dom = Mojo::DOM->new( get( make_url('/docs/installation') ) );
     my $nav = $dom->find("#nav")->[0] // die "Cannot find #nav";
 
     my %skip = map { $_ => 1 } (
@@ -54,6 +54,25 @@ sub get_links {
         }
     }
     return %links;
+}
+
+sub get {
+    my $url = shift;
+
+    my $ua
+        = LWP::UserAgent->new( agent =>
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36'
+        );
+    my $resp = $ua->get($url);
+
+    my $content = $resp->decoded_content;
+    return $content if $resp->is_success;
+
+    my $msg = "Got an error from $url: " . $resp->status_line . "\n";
+    if ($content) {
+        $msg .= $content;
+    }
+    die $msg;
 }
 
 my $base = 'https://tailwindcss.com';
