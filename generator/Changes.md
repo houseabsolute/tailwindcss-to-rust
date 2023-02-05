@@ -1,4 +1,4 @@
-## v0.2.0
+## v0.2.0 - 2023-02-05
 
 - Updated the class categories for the latest TailwindCSS version, 3.2.4.
 
