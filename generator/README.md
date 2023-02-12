@@ -126,9 +126,6 @@ Here's a quick start recipe:
                return rs_to_tw(m[1]);
              })
            );
-           if (classes) {
-             console.log(classes);
-           }
            return classes;
          },
        },
