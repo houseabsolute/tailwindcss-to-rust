@@ -37,10 +37,6 @@ jobs:
           profile: default
           toolchain: ${{ matrix.toolchain }}
           override: true
-      - name: Configure Git
-        run: |
-          git config --global user.email "jdoe@example.com"
-          git config --global user.name "J. Doe"
       - name: Run cargo check
         uses: actions-rs/cargo@v1
         with:
