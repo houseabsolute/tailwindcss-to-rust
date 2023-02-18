@@ -12,3 +12,4 @@ popd
     --output ./src/generated.rs \
     --rustfmt
 tailwindcss --input ./css/tailwind.css --output ./assets/tailwind_compiled.css
+

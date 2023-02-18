@@ -8,7 +8,7 @@ fn main() {
     println!("{}", M::hover);
     println!(
         "{}",
-        C![M![M::hover, C::bg::bg_rose_500], C::typ::text_white],
+        C![M![M::hover, C::bg::bg_blue_50], C::typ::text_white],
     );
 }
 

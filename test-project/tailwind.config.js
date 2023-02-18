@@ -17,7 +17,7 @@ module.exports = {
         let one_class_re = "\\bC::[a-z0-9_]+::([a-z0-9_]+)\\b";
         let class_re = new RegExp(one_class_re, "g");
         let one_mod_re = "\\bM::([a-z0-9_]+)\\b";
-        let mod_re = new RegExp(one_mod_re + ":" + one_class_re, "g");
+        let mod_re = new RegExp(one_mod_re + ", " + one_class_re, "g");
 
         let classes = [];
         let matches = [...content.matchAll(mod_re)];

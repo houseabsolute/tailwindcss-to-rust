@@ -1,5 +1,5 @@
 [workspace]
-members = [ "generator", "macros" ]
+members = [ "generator", "integration", "macros" ]
 exclude = [ "test-project" ]
 
 [workspace.metadata.release]
