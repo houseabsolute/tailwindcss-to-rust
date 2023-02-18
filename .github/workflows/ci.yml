@@ -56,21 +56,42 @@ jobs:
     strategy:
       matrix:
         platform:
-          - os_name: Linux
-            os: ubuntu-latest
-            target: x86_64-unknown-linux-gnu
+          - os_name: Linux-x86_64
+            os: ubuntu-20.04
+            target: x86_64-unknown-linux-musl
             bin: tailwindcss-to-rust
-            name: tailwindcss-to-rust-Linux-x86_64.tar.gz
-          - os_name: macOS
-            os: macOS-latest
-            target: x86_64-apple-darwin
+            name: tailwindcss-to-rust-Linux-x86_64-musl.tar.gz
+            cross: true
+          - os_name: Linux-aarch64
+            os: ubuntu-20.04
+            target: aarch64-unknown-linux-musl
             bin: tailwindcss-to-rust
-            name: tailwindcss-to-rust-Darwin-x86_64.tar.gz
+            name: tailwindcss-to-rust-Linux-aarch64-musl.tar.gz
+            cross: true
+          - os_name: Linux-arm
+            os: ubuntu-20.04
+            target: arm-unknown-linux-musleabi
+            bin: tailwindcss-to-rust
+            name: tailwindcss-to-rust-Linux-arm-musl.tar.gz
+            cross: true
           - os_name: Windows
             os: windows-latest
             target: x86_64-pc-windows-msvc
             bin: tailwindcss-to-rust.exe
             name: tailwindcss-to-rust-Windows-x86_64.zip
+            cross: false
+          - os_name: macOS-x86_64
+            os: macOS-latest
+            target: x86_64-apple-darwin
+            bin: tailwindcss-to-rust
+            name: tailwindcss-to-rust-Darwin-x86_64.tar.gz
+            cross: false
+          - os_name: macOS-aarch64
+            os: macOS-latest
+            target: aarch64-apple-darwin
+            bin: tailwindcss-to-rust
+            name: tailwindcss-to-rust-Darwin-aarch64.tar.gz
+            cross: false
     runs-on: ${{ matrix.platform.os }}
     steps:
       - name: Checkout
@@ -90,10 +111,12 @@ jobs:
       - name: Package as archive
         shell: bash
         run: |
-          strip target/${{ matrix.platform.target }}/release/${{ matrix.platform.bin }}
+          if [[ "${{ matrix.platform.cross }}" == "false" ]]; then
+            # strip doesn't work with non-native binaries on Linux, AFAICT.
+            strip target/${{ matrix.platform.target }}/release/${{ matrix.platform.bin }}
+          fi
           cd target/${{ matrix.platform.target }}/release
-          if [[ "${{ matrix.platform.os }}" == "windows-latest" ]]
-          then
+          if [[ "${{ matrix.platform.os }}" == "windows-latest" ]]; then
             7z a ../../../${{ matrix.platform.name }} ${{ matrix.platform.bin }}
           else
             tar czvf ../../../${{ matrix.platform.name }} ${{ matrix.platform.bin }}
