@@ -14,6 +14,7 @@ function install_tools () {
     run "rustup component add clippy"
     run "ubi --project houseabsolute/precious --in ~/bin"
     run "ubi --project houseabsolute/omegasort --in ~/bin"
+    run "ubi --project tailwindlabs/tailwindcss --in ~/bin"
     run "sudo npm install --global prettier"
 }
 
