@@ -29,14 +29,8 @@ jobs:
           - nightly
     steps:
       - uses: actions/checkout@v2
-      - name: Cache cargo target directories
-        uses: actions/cache@v2
-        with:
-          path: |
-            ~/.cargo/registry
-            ~/.cargo/git
-            target
-          key: cargo-${{ matrix.platform.os }}-${{ matrix.platform.target }}-${{ matrix.toolchain }}-${{ hashFiles('**/Cargo.lock') }}-v2
+      - name: Cache cargo & target directories
+        uses: Swatinem/rust-cache@v2
       - name: Install toolchain
         uses: actions-rs/toolchain@v1
         with:
