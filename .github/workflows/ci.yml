@@ -42,6 +42,14 @@ jobs:
         with:
           command: check
           args: --target=${{ matrix.platform.target }}
+      - name: Run install-dev-tools.sh
+        shell: bash
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -e
+          mkdir $HOME/bin
+          ./dev/bin/install-dev-tools.sh
       - name: Add $HOME/bin to $PATH
         shell: bash
         run: |
