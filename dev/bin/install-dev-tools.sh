@@ -15,7 +15,12 @@ function install_tools () {
     run "ubi --project houseabsolute/precious --in ~/bin"
     run "ubi --project houseabsolute/omegasort --in ~/bin"
     run "ubi --project tailwindlabs/tailwindcss --in ~/bin"
-    run "sudo npm install --global prettier"
+
+    cmd="npm install --global prettier"
+    if [ -n "$(which sudo)" ]; then
+        cmd="sudo $cmd"
+    fi
+    run "$cmd"
 }
 
 if [ "$1" == "-v" ]; then
