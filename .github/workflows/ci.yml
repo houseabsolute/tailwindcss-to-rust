@@ -83,18 +83,6 @@ jobs:
             bin: tailwindcss-to-rust
             name: tailwindcss-to-rust-Linux-x86_64-musl.tar.gz
             cross: true
-          - os_name: Linux-aarch64
-            os: ubuntu-20.04
-            target: aarch64-unknown-linux-musl
-            bin: tailwindcss-to-rust
-            name: tailwindcss-to-rust-Linux-aarch64-musl.tar.gz
-            cross: true
-          - os_name: Linux-arm
-            os: ubuntu-20.04
-            target: arm-unknown-linux-musleabi
-            bin: tailwindcss-to-rust
-            name: tailwindcss-to-rust-Linux-arm-musl.tar.gz
-            cross: true
           - os_name: Windows
             os: windows-latest
             target: x86_64-pc-windows-msvc
