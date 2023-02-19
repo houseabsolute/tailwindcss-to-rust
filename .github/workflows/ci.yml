@@ -4,6 +4,7 @@ on: [push, pull_request]
 
 env:
   CRATE_NAME: tailwindcss-to-rust
+  GITHUB_TOKEN: ${{ github.token }}
   RUST_BACKTRACE: 1
 
 jobs:
@@ -44,8 +45,6 @@ jobs:
           args: --target=${{ matrix.platform.target }}
       - name: Run install-dev-tools.sh
         shell: bash
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -e
           mkdir $HOME/bin
@@ -131,5 +130,3 @@ jobs:
           draft: true
           files: "tailwindcss-to-rust*"
           body_path: generator/Changes.md
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
