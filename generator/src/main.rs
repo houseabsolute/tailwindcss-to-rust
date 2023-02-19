@@ -345,7 +345,7 @@ struct ModifiersContext {
 
 const MODIFIERS_TEMPLATE: &str = r#"
 {visibility} mod M \{
-{{ for const in consts }}    {visibility} const {const.0}: &'static str = "{const.1}";
+{{ for const in consts }}    {visibility} const {const.0}: &str = "{const.1}";
 {{ endfor }}
 }
 
@@ -377,7 +377,7 @@ struct OneModContext<'a> {
 
 const ONE_MOD_TEMPLATE: &str = r#"
 {visibility} mod {name} \{
-{{ for const in consts }}    {visibility} const {const.0}: &'static str = "{const.1}";
+{{ for const in consts }}    {visibility} const {const.0}: &str = "{const.1}";
 {{ endfor }}
 }
 "#;
