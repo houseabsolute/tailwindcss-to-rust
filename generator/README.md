@@ -30,11 +30,11 @@ let class = "pt-4 pb-2 text-whit";
 You can write this:
 
 ```rust,ignore
-let class = C![C.spc.pt_4 C.pb_2 C.type.text_white];
+let class = C![C::spc::pt_4 C::pb_2 C::typ::text_white];
 ```
 
 Note that the typo in the first example, **"text-whit"** (missing the "e")
-would become a compile-time error if you wrote `C.type.text_whit`.
+would become a compile-time error if you wrote `C::typ::text_whit`.
 
 Here's a quick start recipe:
 
@@ -103,13 +103,10 @@ Here's a quick start recipe:
                .replaceAll("_", "-");
            };
 
-           let one_class_re = "C\\.[a-z0-9_]+\\.([a-z0-9_]+)";
-           let class_re = new RegExp(one_class_re + "\\b", "g");
-           let one_mod_re = "M\\.([a-z0-9_]+)";
-           let mod_re = new RegExp(
-             "(:?" + one_mod_re + "\\s*,\\s*)" + one_class_re + "\\b",
-             "g"
-           );
+           let one_class_re = "\\bC::[a-z0-9_]+::([a-z0-9_]+)\\b";
+           let class_re = new RegExp(one_class_re, "g");
+           let one_mod_re = "\\bM::([a-z0-9_]+)\\b";
+           let mod_re = new RegExp(one_mod_re + ", " + one_class_re, "g");
 
            let classes = [];
            let matches = [...content.matchAll(mod_re)];
@@ -126,6 +123,7 @@ Here's a quick start recipe:
                return rs_to_tw(m[1]);
              })
            );
+
            return classes;
          },
        },
@@ -147,7 +145,9 @@ Here's a quick start recipe:
    without the macros then you will need to match something like this:
 
    ```html
-   <div class="{{ M.hover }}:{{ C.bg.bg_rose_500 }} {{ C.bg.bg_rose_800 }}">
+   <div
+     class="{{ M::hover }}:{{ C::bg::bg_rose_500 }} {{ C::bg::bg_rose_800 }}"
+   >
      ...
    </div>
    ```
@@ -155,9 +155,9 @@ Here's a quick start recipe:
    The regexes for that would look something like this:
 
    ```js
-   let one_class_re = "{{\\s*C\\.[a-z0-9_]+\\.([a-z0-9_]+)\\s*}}";
+   let one_class_re = "{{\\s*C::[a-z0-9_]+::([a-z0-9_]+)\\s*}}";
    let class_re = new RegExp(one_class_re, "g");
-   let one_mod_re = "{{\\s*M\\.([a-z0-9_]+)\\s*}}";
+   let one_mod_re = "{{\\s*M::([a-z0-9_]+)\\s*}}";
    let mod_re = new RegExp(one_mod_re + ":" + one_class_re, "g");
    ```
 
@@ -211,48 +211,78 @@ using the following algorithm:
   `inset_2_of_4`.
 - If a name _starts_ with a `2`, as in `2xl`, it becomes `two_`, so the `2xl`
   modifier becomes `two_xl`.
+- The name `static` becomes `static_`.
 
-The generated code provides two structs containing all of the relevant
-strings. The `C` struct contains all the classes, with each group of classes
-as one field in the struct:
+The generated code provides two modules containing all of the relevant
+strings.
+
+The `C` module contains a number of submodules, one for each group of classes
+as documented in the TailwindCSS docs. The groups are as follows:
 
 ```rust,ignore
-pub(crate) struct C {
-    pub(crate) acc: Accessibility,
-    pub(crate) anim: Animation,
-    pub(crate) asp: Aspect,
-    pub(crate) bg: Backgrounds,
-    pub(crate) bor: Borders,
-    pub(crate) eff: Effects,
-    pub(crate) fil: Filters,
-    pub(crate) fg: FlexAndGrid,
-    pub(crate) intr: Interactivity,
-    pub(crate) lay: Layout,
-    pub(crate) lc: LineClamp,
-    pub(crate) pro: Prose,
-    pub(crate) siz: Sizing,
-    pub(crate) spc: Spacing,
-    pub(crate) svg: Svg,
-    pub(crate) tbl: Tables,
-    pub(crate) trn: Transforms,
-    pub(crate) typ: Typography,
+pub(crate) mod C {
+    // Accessibility
+    pub(crate) mod acc { ... }
+
+    // Animation
+    pub(crate) mod anim { ... }
+
+    // Backgrounds
+    pub(crate) mod bg { ... }
+
+    // Borders
+    pub(crate) mod bor { ... }
+
+    // Effects
+    pub(crate) mod eff { ... }
+
+    // Filter
+    pub(crate) mod fil { ... }
+
+    // Flexbox & Grid
+    pub(crate) mod fg { ... }
+
+    // Interactivity
+    pub(crate) mod intr { ... }
+
+    // Layout
+    pub(crate) mod lay { ... }
+
+    // Sizing
+    pub(crate) mod siz { ... }
+
+    // Spacing
+    pub(crate) mod spc { ... }
+
+    // SVG
+    pub(crate) mod svg { ... }
+
+    // Tables
+    pub(crate) mod tbl { ... }
+
+    // Transforms
+    pub(crate) mod trn { ... }
+
+    // Typography
+    pub(crate) mod typ { ... }
 }
 ```
 
-In your code, you can refer to classes with `C.typ.text_lg` or
-`C.lay.flex`. If you have any custom classes, these will end in an "unknown"
-group available from `C.unk`. Adding a way to put these custom classes in
+In your code, you can refer to classes with `C::typ::text_lg` or
+`C::lay::flex`. If you have any custom classes, these will end in an "unknown"
+group available from `C::unk`. Adding a way to put these custom classes in
 other groups is a todo item.
 
-The modifiers have their own struct, `M`, which contains one field per
-modifier, so it's used as `M.lg` or `M.hover`.
+The modifiers have their own module, `M`, which contains one field per
+modifier, so it's used as `M::lg` or `M::hover`. A few modifiers which are
+parameterizable are not included, like `aria-*`, `data-*`, etc.
 
-The best way to understand the generated structs is to simply open the
-generated code file in your editor and look at it.
+The best way to understand the generated modules is to open the generated code
+file in your editor and look at it.
 
 Then you can import these consts in your code and use them to refer to
 Tailwind CSS class names with compile time checking:
 
 ```rust,ignore
-element.set_class(C.asp.aspect_h_auto);
+element.set_class(C::lay::aspect_auto);
 ```
