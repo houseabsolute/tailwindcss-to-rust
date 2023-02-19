@@ -1,3 +1,7 @@
+## v0.3.2 - 2023-02-19
+
+- Fixed the generator to run on Windows without a stack overflow.
+
 ## v0.3.1 - 2023-02-18
 
 - Fixes for docs and release tooling.
