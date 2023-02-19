@@ -1,3 +1,7 @@
+## v0.3.1 - 2023-02-18
+
+- Fixes for docs and release tooling.
+
 ## v0.3.0 - 2023-02-18
 
 - The generated code now groups CSS classes into modules instead of
