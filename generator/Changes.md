@@ -1,3 +1,12 @@
+## v0.3.0 - 2023-02-18
+
+- The generated code now groups CSS classes into modules instead of
+  structs. This prevents stack overflows that happened when the structs were
+  put on the stack. Thanks to @mdochdev for identifying the issue and
+  suggesting this fix. GH #4.
+
+- Updated the class categories for the latest TailwindCSS version, 3.2.7.
+
 ## v0.2.0 - 2023-02-05
 
 - Updated the class categories for the latest TailwindCSS version, 3.2.4.
