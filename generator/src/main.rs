@@ -399,7 +399,7 @@ fn classes_code(mods: &HashMap<&str, HashMap<String, String>>, visibility: &'sta
                 .unwrap()
                 .keys()
                 .sorted()
-                .map(|f| (maybe_escape_field(f), members.get(f).unwrap().as_str()))
+                .map(|f| (maybe_escape_name(f), members.get(f).unwrap().as_str()))
                 .collect(),
         };
         code.push_str(
@@ -413,11 +413,11 @@ fn classes_code(mods: &HashMap<&str, HashMap<String, String>>, visibility: &'sta
     code
 }
 
-fn maybe_escape_field(field: &str) -> &str {
-    if field == "static" {
-        r##"r#static"##
+fn maybe_escape_name(name: &str) -> &str {
+    if name == "static" {
+        "static_"
     } else {
-        field
+        name
     }
 }
 
