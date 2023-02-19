@@ -6339,6 +6339,7 @@ fn make_groups() -> HashMap<&'static str, &'static str> {
         ("max-h-full", "sizing"),
         ("max-h-max", "sizing"),
         ("max-h-min", "sizing"),
+        ("max-h-none", "sizing"),
         ("max-h-px", "sizing"),
         ("max-h-screen", "sizing"),
         ("max-w-0", "sizing"),
