@@ -1,3 +1,8 @@
+## v0.1.3 - 2023-02-18
+
+- Updated the docs to reflect the changes in version 0.3.0 of the
+  tailwindcss-to-rust code generator.
+
 ## v0.1.2 - 2022-02-17
 
 - Documentation and example fixes.
