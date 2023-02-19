@@ -19,13 +19,13 @@ fn SomeComponent(cx: Scope) -> Element {
         div {
             // "grid-cols-3 md:grid-cols-6 lg:grid-cols-12"
             class: DC![
-                C.fg.grid-cols-3,
-                M![M.md, C.fg.grid-cols-6],
-                M![M.lg, C.fg.grid-cols-12]
+                C::fg::grid-cols-3,
+                M![M::md, C::fg::grid-cols-6],
+                M![M::lg, C::fg::grid-cols-12]
             ],
             div {
                 // "text-lg text-white"
-                class: DC![C.typ.text_lg, C.typ.text_white],
+                class: DC![C::typ::text_lg, C::typ::text_white],
             }
         }
     })
