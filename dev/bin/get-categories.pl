@@ -1,3 +1,5 @@
+#!/usr/bin/env perl
+
 use v5.32;
 
 use strict;
@@ -25,7 +27,7 @@ sub main {
 
     for my $cat (sort keys %classes) {
         for my $c (sort $classes{$cat}->@*) {
-            say qq{("$c", "$cat"),};
+            say qq{"$c" => Some("$cat"),};
         }
     }
 }
