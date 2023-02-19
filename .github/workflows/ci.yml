@@ -50,6 +50,7 @@ jobs:
           set -e
           mkdir $HOME/bin
           ./dev/bin/install-dev-tools.sh
+        if: matrix.platform.os != 'windows-latest'
       - name: Add $HOME/bin to $PATH
         shell: bash
         run: |
@@ -58,7 +59,15 @@ jobs:
         uses: actions-rs/cargo@v1
         with:
           command: test
-          args: --target=${{ matrix.platform.target }}
+          args: --target=${{ matrix.platform.target }} --workspace
+        if: matrix.platform.os != 'windows-latest'
+      # Remove this once ubi can install the tailwindcss release on Windows.
+      - name: Run cargo test
+        uses: actions-rs/cargo@v1
+        with:
+          command: test
+          args: --target=${{ matrix.platform.target }} --workspace --exclude integration
+        if: matrix.platform.os == 'windows-latest'
 
   # Copied from https://github.com/urbica/martin/blob/master/.github/workflows/ci.yml
   release:
