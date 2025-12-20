@@ -9,11 +9,11 @@ license = "Apache-2.0 OR MIT"
 edition = "2021"
 
 [dependencies]
-clap = { version = "3.2.23", features = ["derive"] }
-itertools = "0.10.5"
-regex = "1.7.1"
-serde = { version = "1.0.152", features = ["derive"] }
-tempfile = "3.3.0"
+clap = { version = "3", features = ["derive"] }
+itertools = "0.14.0"
+regex = "1.12.2"
+serde = { version = "1.0.228", features = ["derive"] }
+tempfile = "3.23.0"
 tinytemplate = "1.2.1"
 
 [features]

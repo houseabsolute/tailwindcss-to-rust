@@ -4,8 +4,8 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-anyhow = "1.0.69"
-home = "0.5.4"
+anyhow = "1.0.100"
+home = "0.5.12"
 
 [[test]]
 name = "integration_tests"
