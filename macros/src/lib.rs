@@ -47,6 +47,7 @@ macro_rules! C {
             // ].into_iter().filter_map(Option::is_some).flatten().join(" ")
             let mut all_classes = vec![];
             $(
+                #[allow(clippy::used_underscore_items)]
                 $crate::_push_all_strings(&mut all_classes, $class.to_option_vec_string());
             )*
             all_classes.join(" ")
@@ -75,6 +76,7 @@ macro_rules! DC {
         {
             let mut all_classes = vec![];
             $(
+                #[allow(clippy::used_underscore_items)]
                 $crate::_push_all_strings(&mut all_classes, $class.to_option_vec_string());
             )*
             format_args!("{}", all_classes.join(" "))
@@ -100,6 +102,7 @@ macro_rules! M {
         {
             let mut all_modifiers = vec![];
             $(
+                #[allow(clippy::used_underscore_items)]
                 $crate::_push_all_strings(&mut all_modifiers, $modifier.to_option_vec_string());
             )*
             all_modifiers.join(":")
@@ -218,6 +221,7 @@ mod tests {
 
     #[test]
     fn to_option_vec_string_ref_option_some() {
+        #[allow(clippy::ref_option_ref)]
         let option: &Option<&str> = &Some("foo_opt");
         assert_eq!(C![option], "foo_opt");
         assert_eq!(M![option], "foo_opt");

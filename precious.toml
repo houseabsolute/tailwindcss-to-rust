@@ -11,14 +11,30 @@ ok_exit_codes = 0
 lint_failure_exit_codes = 1
 
 [commands.clippy]
-type     = "lint"
-include  = "**/*.rs"
-run_mode = "root"
-chdir    = true
-cmd      = [ "cargo", "clippy", "--locked", "--all-targets", "--all-features", "--", "-D", "clippy::all" ]
+type = "both"
+include = "**/*.rs"
+invoke = "once"
+path-args = "none"
+working-dir = "root"
+cmd = [
+    "cargo",
+    "clippy",
+    "--color",
+    "always",
+    "--locked",
+    "--all-targets",
+    "--all-features",
+    "--",
+    "-D",
+    "clippy::pedantic",
+    "-D",
+    "warnings",
+]
+tidy_flags = "--fix"
 ok_exit_codes = 0
 lint_failure_exit_codes = 101
 expect_stderr = true
+labels = ["default"]
 
 [commands.prettier]
 type    = "both"

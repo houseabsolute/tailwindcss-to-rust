@@ -26,13 +26,13 @@ module.exports = {
             ...matches.map((m) => {
               let pieces = m.slice(1, m.length);
               return pieces.map((p) => rs_to_tw(p)).join(":");
-            })
+            }),
           );
         }
         classes.push(
           ...[...content.matchAll(class_re)].map((m) => {
             return rs_to_tw(m[1]);
-          })
+          }),
         );
 
         return classes;

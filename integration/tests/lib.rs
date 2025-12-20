@@ -56,11 +56,11 @@ fn regen() -> Result<()> {
 
     let run = run_command(&["cargo", "run"], &test_project_dir)?;
 
-    let expect = r#"
+    let expect = r"
 bg-rose-500
 hover
 hover:bg-blue-50 text-white
-"#;
+";
     assert_eq!(str::from_utf8(&run.stdout)?.trim(), expect.trim());
 
     let css = read_to_string("../test-project/assets/tailwind_compiled.css")?;
