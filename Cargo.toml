@@ -1,6 +1,6 @@
 [workspace]
-members = [ "generator", "integration", "macros" ]
-exclude = [ "test-project" ]
+members = ["generator", "integration", "macros"]
+exclude = ["test-project"]
 resolver = "2"
 
 [workspace.metadata.release]

@@ -1,17 +1,7 @@
-exclude = [
-  "target",
-]
-
-[commands.rustfmt]
-type    = "both"
-include = "**/*.rs"
-cmd     = [ "rustfmt", "--edition", "2021" ]
-lint_flags = "--check"
-ok_exit_codes = 0
-lint_failure_exit_codes = 1
+exclude = ["target"]
 
 [commands.clippy]
-type = "both"
+type = "lint"
 include = "**/*.rs"
 invoke = "once"
 path-args = "none"
@@ -30,27 +20,89 @@ cmd = [
     "-D",
     "warnings",
 ]
-tidy_flags = "--fix"
 ok_exit_codes = 0
 lint_failure_exit_codes = 101
 expect_stderr = true
-labels = ["default"]
+
+[commands."clippy --fix"]
+type = "tidy"
+include = "**/*.rs"
+invoke = "once"
+path-args = "none"
+working-dir = "root"
+cmd = [
+    "cargo",
+    "clippy",
+    "--fix",
+    "--allow-dirty",
+    "--locked",
+    "--all-targets",
+    "--all-features",
+    "--",
+    "-D",
+    "clippy::pedantic",
+]
+ok_exit_codes = 0
+lint_failure_exit_codes = 101
+expect_stderr = true
+
+[commands.rustfmt]
+type = "both"
+include = "**/*.rs"
+cmd = ["rustfmt", "--edition", "2021"]
+lint_flags = "--check"
+ok_exit_codes = [0]
+lint_failure_exit_codes = [1]
 
 [commands.prettier]
-type    = "both"
-include = [ "**/*.md", "**/*.js", "**/*.yml" ]
-cmd     = "prettier"
-lint_flags = "--check"
-tidy_flags = "--write"
-ok_exit_codes = 0
-lint_failure_exit_codes = 1
+type = "both"
+include = ["**/*.md", "**/*.yml"]
+cmd = ["prettier", "--no-config", "--print-width", "100", "--prose-wrap", "always"]
+lint-flags = "--check"
+tidy-flags = "--write"
+ok-exit-codes = 0
+lint-failure-exit-codes = 1
+ignore-stderr = ["Code style issues"]
 
 [commands.omegasort-gitignore]
 type = "both"
 include = "**/.gitignore"
-cmd = [ "omegasort", "--sort=path" ]
-lint_flags = "--check"
-tidy_flags = "--in-place"
+cmd = ["omegasort", "--sort", "path", "--unique"]
+lint-flags = "--check"
+tidy-flags = "--in-place"
+ok-exit-codes = 0
+lint-failure-exit-codes = 1
+ignore-stderr = ["The .+ file is not sorted", "The .+ file is not unique"]
+
+[commands.shellcheck]
+type = "lint"
+include = "**/*.sh"
+cmd = "shellcheck"
 ok_exit_codes = 0
 lint_failure_exit_codes = 1
-expect_stderr = true
+
+[commands.shfmt]
+type = "both"
+include = "**/*.sh"
+cmd = ["shfmt", "--simplify", "--indent", "4"]
+lint_flags = "--diff"
+tidy_flags = "--write"
+ok_exit_codes = 0
+lint_failure_exit_codes = 1
+
+[commands.typos]
+type = "lint"
+include = "**/*"
+cmd = "typos"
+invoke = "once"
+ok-exit-codes = 0
+lint-failure-exit-codes = 2
+
+[commands.taplo]
+type = "both"
+include = "**/*.toml"
+cmd = ["taplo", "format", "--option", "indent_string=    ", "--option", "column_width=100"]
+lint_flags = "--check"
+ok_exit_codes = 0
+lint_failure_exit_codes = 1
+ignore_stderr = "INFO taplo.+"

@@ -1,0 +1,4 @@
+[default.extend-words]
+# These are mod names for these groups of CSS classes.
+siz = "siz"
+typ = "typ"

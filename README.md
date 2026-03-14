@@ -1,5 +1,5 @@
-This repo contains a [tool to generate Rust code from Tailwind CSS](generator)
-and [a set of macros for working with that generated code](macros).
+This repo contains a [tool to generate Rust code from Tailwind CSS](generator) and
+[a set of macros for working with that generated code](macros).
 
 See the docs for those crates for more details.
 
