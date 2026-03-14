@@ -22,15 +22,7 @@ jobs:
           profile: default
           toolchain: stable
           override: true
-      - name: Configure Git
-        run: |
-          git config --global user.email "jdoe@example.com"
-          git config --global user.name "J. Doe"
-      - name: Run install-dev-tools.sh
-        run: |
-          set -e
-          mkdir $HOME/bin
-          ./dev/bin/install-dev-tools.sh
+      - uses: jdx/mise-action@v3
       - name: Run precious
         run: |
-          PATH=$PATH:$HOME/bin precious lint -a
+          mise exec -- precious lint -a
