@@ -8,125 +8,54 @@ env:
   RUST_BACKTRACE: 1
 
 jobs:
-  test:
-    name: Test - ${{ matrix.platform.os_name }} with rust ${{ matrix.toolchain }}
-    runs-on: ${{ matrix.platform.os }}
+  test-matrix:
+    name: ${{ matrix.platform.os-name }} with rust ${{ matrix.toolchain }}
+    runs-on: ${{ matrix.platform.runs-on }}
     strategy:
       fail-fast: false
       matrix:
         platform:
-          - os_name: Linux
-            os: ubuntu-latest
-            target: x86_64-unknown-linux-gnu
-          - os_name: macOS
-            os: macOS-latest
-            target: x86_64-apple-darwin
-          - os_name: Windows
-            os: windows-latest
+          - os-name: Linux-x86_64
+            runs-on: ubuntu-24.04
+            target: x86_64-unknown-linux-musl
+          - os-name: Linux-aarch64
+            runs-on: ubuntu-24.04
+            target: aarch64-unknown-linux-musl
+          - os-name: Windows-x86_64
+            runs-on: windows-latest
             target: x86_64-pc-windows-msvc
+          - os-name: macOS-aarch64
+            runs-on: macOS-latest
+            target: aarch64-apple-darwin
         toolchain:
           - stable
-          - beta
-          - nightly
+        include:
+          - platform:
+              os-name: Linux-x86_64
+              runs-on: ubuntu-24.04
+              target: x86_64-unknown-linux-musl
+              bin: ubi
+            toolchain: beta
+          - platform:
+              os-name: Linux-x86_64
+              runs-on: ubuntu-24.04
+              target: x86_64-unknown-linux-musl
+              bin: ubi
+            toolchain: nightly
     steps:
-      - uses: actions/checkout@v2
-      - name: Cache cargo & target directories
-        uses: Swatinem/rust-cache@v2
-      - name: Install toolchain
-        uses: actions-rs/toolchain@v1
+      - uses: actions/checkout@v6
+      - name: Run tests
+        uses: houseabsolute/actions-rust-cross@v1
         with:
-          profile: default
-          toolchain: ${{ matrix.toolchain }}
-          override: true
-      - name: Run cargo check
-        uses: actions-rs/cargo@v1
-        with:
-          command: check
-          args: --target=${{ matrix.platform.target }}
-      - name: Run install-dev-tools.sh
-        shell: bash
-        run: |
-          set -e
-          mkdir $HOME/bin
-          ./dev/bin/install-dev-tools.sh
-      - name: Add $HOME/bin to $PATH
-        shell: bash
-        run: |
-          echo "$HOME/bin" >> $GITHUB_PATH
-      - name: Run cargo test
-        uses: actions-rs/cargo@v1
-        with:
-          command: test
-          args: --target=${{ matrix.platform.target }} --workspace
-
-  # Copied from https://github.com/urbica/martin/blob/master/.github/workflows/ci.yml
-  release:
-    name: Release - ${{ matrix.platform.os_name }}
-    if: startsWith( github.ref, 'refs/tags/tailwindcss-to-rust-v' )
-    needs: [test]
-    strategy:
-      matrix:
-        platform:
-          - os_name: Linux-x86_64
-            os: ubuntu-20.04
-            target: x86_64-unknown-linux-musl
-            bin: tailwindcss-to-rust
-            name: tailwindcss-to-rust-Linux-x86_64-musl.tar.gz
-            cross: true
-          - os_name: Windows
-            os: windows-latest
-            target: x86_64-pc-windows-msvc
-            bin: tailwindcss-to-rust.exe
-            name: tailwindcss-to-rust-Windows-x86_64.zip
-            cross: false
-          - os_name: macOS-x86_64
-            os: macOS-latest
-            target: x86_64-apple-darwin
-            bin: tailwindcss-to-rust
-            name: tailwindcss-to-rust-Darwin-x86_64.tar.gz
-            cross: false
-          - os_name: macOS-aarch64
-            os: macOS-latest
-            target: aarch64-apple-darwin
-            bin: tailwindcss-to-rust
-            name: tailwindcss-to-rust-Darwin-aarch64.tar.gz
-            cross: false
-    runs-on: ${{ matrix.platform.os }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: Install stable toolchain
-        uses: actions-rs/toolchain@v1
-        with:
-          profile: minimal
-          toolchain: stable
-          override: true
+          command: "test"
           target: ${{ matrix.platform.target }}
-      - name: Build binary
-        uses: actions-rs/cargo@v1
+          toolchain: ${{ matrix.toolchain }}
+          args: "--locked --release"
+        if: ${{ !matrix.platform.skip-tests }}
+      - name: Publish artifacts and release
+        uses: houseabsolute/actions-rust-release@v0
         with:
-          command: build
-          args: --package tailwindcss-to-rust --release --target ${{ matrix.platform.target }}
-      - name: Package as archive
-        shell: bash
-        run: |
-          if [[ "${{ matrix.platform.cross }}" == "false" ]]; then
-            # strip doesn't work with non-native binaries on Linux, AFAICT.
-            strip target/${{ matrix.platform.target }}/release/${{ matrix.platform.bin }}
-          fi
-          cd target/${{ matrix.platform.target }}/release
-          if [[ "${{ matrix.platform.os }}" == "windows-latest" ]]; then
-            7z a ../../../${{ matrix.platform.name }} ${{ matrix.platform.bin }}
-          else
-            tar czvf ../../../${{ matrix.platform.name }} ${{ matrix.platform.bin }}
-          fi
-          cd -
-      - name: Generate SHA-256
-        if: matrix.platform.os == 'macOS-latest'
-        run: shasum -a 256 ${{ matrix.platform.name }}
-      - name: Publish GitHub release
-        uses: softprops/action-gh-release@v1
-        with:
-          draft: true
-          files: "tailwindcss-to-rust*"
-          body_path: generator/Changes.md
+          executable-name: ubi
+          target: ${{ matrix.platform.target }}
+          action-gh-release-parameters: '{ "make_latest": false }'
+        if: matrix.toolchain == 'stable' && matrix.platform.features == ''
