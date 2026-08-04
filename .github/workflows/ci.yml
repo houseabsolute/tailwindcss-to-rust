@@ -25,7 +25,7 @@ jobs:
           - os-name: Linux-aarch64
             runs-on: ubuntu-24.04
             target: aarch64-unknown-linux-musl
-            command: build
+            skip-tests: true
           - os-name: Windows-x86_64
             runs-on: windows-latest
             target: x86_64-pc-windows-msvc
@@ -51,10 +51,22 @@ jobs:
       - name: Run tests
         uses: houseabsolute/actions-rust-cross@v1
         with:
-          command: ${{ matrix.platform.command || 'test' }}
+          command: "test"
           target: ${{ matrix.platform.target }}
           toolchain: ${{ matrix.toolchain }}
           args: "--locked --release"
+        if: ${{ !matrix.platform.skip-tests }}
+      # `cargo test` doesn't build the tailwindcss-to-rust binary, because the
+      # tests for it live in a separate package, so we have to build it
+      # explicitly for the release step to package.
+      - name: Build release binary
+        uses: houseabsolute/actions-rust-cross@v1
+        with:
+          command: "build"
+          target: ${{ matrix.platform.target }}
+          toolchain: ${{ matrix.toolchain }}
+          args: "--locked --release"
+        if: matrix.toolchain == 'stable'
       - name: Publish artifacts and release
         uses: houseabsolute/actions-rust-release@v0
         with:
