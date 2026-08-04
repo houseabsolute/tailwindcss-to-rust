@@ -11,6 +11,7 @@ module.exports = {
           return rs
             .replaceAll("_of_", "/")
             .replaceAll("_p_", ".")
+            .replaceAll("_pct", "%")
             .replaceAll("_", "-");
         };
 

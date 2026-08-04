@@ -1,3 +1,9 @@
+## Unreleased
+
+- Percent signs (`%`) in class names are now transformed to `_pct` in the generated Rust
+  identifiers. Without this, the gradient color stop position classes added in TailwindCSS 3.3, like
+  `from-0%`, generated code that would not compile.
+
 ## v0.3.2 - 2023-02-19
 
 - Fixed the generator to run on Windows without a stack overflow.

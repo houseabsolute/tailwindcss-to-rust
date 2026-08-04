@@ -138,6 +138,7 @@ fn class_to_rust_var(class: &str) -> String {
         .replace('-', "_")
         .replace('.', "_p_")
         .replace('/', "_of_")
+        .replace('%', "_pct")
 }
 
 fn write_css_file(tw_config: &Path, input: &Path, tw_exe: &Path, tempdir: &TempDir) -> PathBuf {
@@ -6589,5 +6590,25 @@ fn known_group(class: &str) -> Option<&'static str> {
         | "whitespace-pre-line"
         | "whitespace-pre-wrap" => Some("typography"),
         _ => None,
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::class_to_rust_var;
+
+    #[test]
+    fn class_to_rust_var_mangling() {
+        let tests: &[(&str, &str)] = &[
+            ("bg-rose-500", "bg_rose_500"),
+            ("inset-0\\.5", "inset_0_p_5"),
+            ("inset-2\\/4", "inset_2_of_4"),
+            ("from-0%", "from_0_pct"),
+            ("via-33%", "via_33_pct"),
+            ("2xl", "two_xl"),
+        ];
+        for (class, expect) in tests {
+            assert_eq!(&class_to_rust_var(class), expect, "mangling {class}");
+        }
     }
 }

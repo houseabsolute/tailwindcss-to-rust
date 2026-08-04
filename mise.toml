@@ -6,7 +6,11 @@ shfmt = "3.13.1"
 typos = "1.48.0"
 "github:houseabsolute/omegasort" = "0.1.3"
 "github:houseabsolute/precious" = "0.11.0"
-"github:tailwindlabs/tailwindcss" = "4.3.3"
+# This project does not support Tailwind v4 yet. The test project's CSS uses
+# `@tailwind base/components/utilities` and a JS config file, both of which v4
+# replaced with `@import "tailwindcss"` and CSS-based config. Under v4 the
+# generator produces no utility classes at all.
+"github:tailwindlabs/tailwindcss" = "3.4.19"
 
 [settings]
 minimum_release_age = "3d"

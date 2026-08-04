@@ -2,7 +2,7 @@ The `tailwindcss-to-rust` CLI tool generates Rust code that allows you to refer 
 from your Rust code. This means that any attempt to use a nonexistent class will lead to a
 compile-time error, and you can use code completion to list available classes.
 
-**This tool has been tested with version 3.2.x of Tailwind.**
+**This tool has been tested with version 3.4.x of Tailwind. It does not support Tailwind 4.x.**
 
 The generated code allows you to use Tailwind CSS classes in your Rust frontend code with
 compile-time checking of names and code completion for class names. These classes are grouped
@@ -83,7 +83,11 @@ Here's a quick start recipe:
              if (rs.startsWith("two_")) {
                rs = rs.replace("two_", "2");
              }
-             return rs.replaceAll("_of_", "/").replaceAll("_p_", ".").replaceAll("_", "-");
+             return rs
+               .replaceAll("_of_", "/")
+               .replaceAll("_p_", ".")
+               .replaceAll("_pct", "%")
+               .replaceAll("_", "-");
            };
 
            let one_class_re = "\\bC::[a-z0-9_]+::([a-z0-9_]+)\\b";
@@ -184,6 +188,7 @@ Names are transformed into Rust identifiers using the following algorithm:
 - All dashes (`-`) become underscores (`_`).
 - All periods (`.`) become `_p_`, so `.inset-2\.5` becomes `inset_2_p_5`.
 - All forward slashes (`/`) become `_of_`, so `.inset-2\/4` becomes `inset_2_of_4`.
+- All percent signs (`%`) become `_pct`, so `.from-0%` becomes `from_0_pct`.
 - If a name _starts_ with a `2`, as in `2xl`, it becomes `two_`, so the `2xl` modifier becomes
   `two_xl`.
 - The name `static` becomes `static_`.
