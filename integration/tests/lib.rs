@@ -10,13 +10,6 @@ use std::{
 fn regen() -> Result<()> {
     // The commands run below should match the ones in test-project/regen.sh.
 
-    let home = home::home_dir()
-        .expect("should be able to determine a home dir")
-        .display()
-        .to_string();
-    let tailwindcss_exe = PathBuf::from_iter([&home, "bin", "tailwindcss"])
-        .display()
-        .to_string();
     let test_project_dir = PathBuf::from_iter(["..", "test-project"])
         .display()
         .to_string();
@@ -36,8 +29,6 @@ fn regen() -> Result<()> {
             "./css/tailwind.css",
             "--output",
             "./src/generated.rs",
-            "--tailwindcss",
-            &tailwindcss_exe,
             "--rustfmt",
         ],
         &test_project_dir,
@@ -45,7 +36,7 @@ fn regen() -> Result<()> {
 
     run_command(
         &[
-            &tailwindcss_exe,
+            "tailwindcss",
             "--input",
             "./css/tailwind.css",
             "--output",
