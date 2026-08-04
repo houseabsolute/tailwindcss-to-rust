@@ -252,7 +252,7 @@ mod tests {
 
         impl std::fmt::Display for Classes {
             fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-                write!(f, "{} {}", self.classes, C!["foo", "bar" M!["md", "baz"]],)
+                write!(f, "{} {}", self.classes, C!["foo", "bar" M!["md", "baz"]])
             }
         }
 
